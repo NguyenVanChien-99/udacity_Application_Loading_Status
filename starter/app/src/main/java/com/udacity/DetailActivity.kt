@@ -2,6 +2,7 @@ package com.udacity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.udacity.databinding.ActivityDetailBinding
 
@@ -18,7 +19,7 @@ class DetailActivity : AppCompatActivity() {
 
         val fileName = intent.getStringExtra(FILE_NAME_KEY)
         val status = intent.getStringExtra(STATUS_KEY)
-
+        Log.i("DETAIL_ACTIVITY", "onCreate: ${fileName}")
         binding.contentDetail.txtFilename.text=fileName
         binding.contentDetail.txtStatus.text=status
 

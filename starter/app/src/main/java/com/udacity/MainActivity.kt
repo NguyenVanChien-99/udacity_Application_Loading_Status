@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
@@ -17,6 +18,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.udacity.databinding.ActivityMainBinding
@@ -87,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             if (id == downloadID) {
                 val status = getDownloadStatus()
-//                notificationManager.cancelAll()
+                notificationManager.cancelAll()
                 notificationManager.sendNotification(detailTitle, status, applicationContext)
             }
         }
@@ -126,6 +128,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun createChannel(channelID: String, channelName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.i("SDK_VERSION", "createChannel: ${Build.VERSION.SDK_INT}")
+            checkNotificationPermission()
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 channelID,
                 channelName,
@@ -137,6 +143,24 @@ class MainActivity : AppCompatActivity() {
 
             val notificationManger = this.getSystemService(NotificationManager::class.java)
             notificationManger.createNotificationChannel(notificationChannel)
+        }
+    }
+
+
+    private fun checkNotificationPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                Log.i("PERMISSION", "checkNotificationPermission: granted")
+                return
+            }
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
+            }
         }
     }
 }

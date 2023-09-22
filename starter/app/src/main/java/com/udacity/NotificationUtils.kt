@@ -7,24 +7,32 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 
-fun NotificationManager.sendNotification(fileName:String,status:String, applicationContext: Context){
+fun NotificationManager.sendNotification(
+    fileName: String,
+    status: String,
+    applicationContext: Context
+) {
 
     Log.i("NOTIFICATION", "sendNotification: ${fileName}----${status}")
-    val intent = Intent(applicationContext,DetailActivity::class.java)
-    intent.putExtra(FILE_NAME_KEY,fileName)
-    intent.putExtra(STATUS_KEY,status)
+    val intent = Intent(applicationContext, DetailActivity::class.java)
+    intent.putExtra(FILE_NAME_KEY, fileName)
+    intent.putExtra(STATUS_KEY, status)
+
     val pendingIntent = PendingIntent.getActivity(
-        applicationContext,NOTIFICATION_ID,intent,
-        PendingIntent.FLAG_IMMUTABLE
+        applicationContext, NOTIFICATION_ID, intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or  PendingIntent.FLAG_MUTABLE
     )
 
-    val builder = NotificationCompat.Builder(applicationContext,CHANNEL_ID)
+    val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_assistant_black_24dp)
         .setContentTitle(applicationContext.getString(R.string.notification_title))
         .setContentText(applicationContext.getString(R.string.notification_description))
-        .setContentIntent(pendingIntent)
-        .addAction(R.drawable.ic_assistant_black_24dp,applicationContext.getString(R.string.notification_button),pendingIntent)
+        .addAction(
+            R.drawable.ic_assistant_black_24dp,
+            applicationContext.getString(R.string.notification_button),
+            pendingIntent
+        )
 
-    notify(NOTIFICATION_ID,builder.build())
+    notify(NOTIFICATION_ID, builder.build())
 
 }
