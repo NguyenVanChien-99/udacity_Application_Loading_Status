@@ -14,6 +14,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -60,17 +61,17 @@ class MainActivity : AppCompatActivity() {
             when (binding.contentMain.radio.checkedRadioButtonId) {
                 R.id.btnGlide -> {
                     download(GLIDE)
-                    detailTitle = resources.getResourceName(R.string.glide_text)
+                    detailTitle = resources.getString(R.string.glide_text)
                 }
 
                 R.id.btnLoadApp -> {
                     download(LOADAPP)
-                    detailTitle = resources.getResourceName(R.string.load_app_text)
+                    detailTitle = resources.getString(R.string.load_app_text)
                 }
 
                 R.id.btnRetrofit -> {
                     download(RETROFIT)
-                    detailTitle = resources.getResourceName(R.string.retrofit_text)
+                    detailTitle = resources.getString(R.string.retrofit_text)
                 }
 
                 else -> {
@@ -86,8 +87,8 @@ class MainActivity : AppCompatActivity() {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             if (id == downloadID) {
                 val status = getDownloadStatus()
-                notificationManager.cancelAll()
-                notificationManager.sendNotification(detailTitle,status,applicationContext)
+//                notificationManager.cancelAll()
+                notificationManager.sendNotification(detailTitle, status, applicationContext)
             }
         }
     }
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         if (cursor.moveToNext()) {
             status = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
         }
-        return when (status) {
+        return when (cursor.getInt(status)) {
             DownloadManager.STATUS_SUCCESSFUL -> "Success"
             else -> "Fail"
         }

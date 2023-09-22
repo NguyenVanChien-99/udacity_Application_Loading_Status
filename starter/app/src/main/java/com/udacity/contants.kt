@@ -10,6 +10,6 @@ const val RETROFIT =
 const val CHANNEL_ID = "channelId"
 const val CHANNEL_NAME = "Download"
 
-const val NOTIFICATION_ID = 1999218
+const val NOTIFICATION_ID = 1
 const val FILE_NAME_KEY = "filename"
 const val STATUS_KEY = "status"

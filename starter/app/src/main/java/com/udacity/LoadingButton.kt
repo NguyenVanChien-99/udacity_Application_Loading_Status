@@ -6,7 +6,9 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import kotlin.properties.Delegates
@@ -23,8 +25,9 @@ class LoadingButton @JvmOverloads constructor(
     private val paint = Paint().apply {
         color = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
         style = Paint.Style.FILL
+        typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
-        textSize = 20f
+        textSize = 60f
     }
 
     private val valueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
@@ -42,17 +45,16 @@ class LoadingButton @JvmOverloads constructor(
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationStart(animation)
                 this@LoadingButton.isEnabled = true
-                buttonState=ButtonState.Completed
+                buttonState = ButtonState.Completed
             }
         })
     }
 
-    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
+    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { _, _, new ->
         when (new) {
             ButtonState.Clicked -> {
-                text = resources.getResourceName(R.string.button_loading)
-                paint.color = ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, null)
-                buttonState=ButtonState.Loading
+                text = resources.getString(R.string.button_loading)
+                buttonState = ButtonState.Loading
             }
 
             ButtonState.Loading -> {
@@ -60,8 +62,7 @@ class LoadingButton @JvmOverloads constructor(
             }
 
             ButtonState.Completed -> {
-                text = resources.getResourceName(R.string.button_name)
-                paint.color = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
+                text = resources.getString(R.string.button_name)
             }
         }
         invalidate()
@@ -69,7 +70,7 @@ class LoadingButton @JvmOverloads constructor(
 
 
     init {
-        text = resources.getResourceName(R.string.button_name)
+        text = resources.getString(R.string.button_name)
     }
 
 
@@ -79,22 +80,26 @@ class LoadingButton @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+        //draw rectangle
+        paint.color = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
+        canvas?.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
+        paint.color = ResourcesCompat.getColor(resources, R.color.white, null)
+        canvas?.drawText(text, widthSize.toFloat() / 2, heightSize.toFloat() / 2 + 10f, paint)
 
-        if(buttonState==ButtonState.Loading){
+        //draw the new one
+        if (buttonState == ButtonState.Loading) {
             //draw rectangle
+            paint.color = ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, null)
             canvas?.drawRect(0f, 0f, widthSize * processValue, heightSize.toFloat(), paint)
-            canvas?.drawText(text, 0f, 0f, paint)
+            paint.color = ResourcesCompat.getColor(resources, R.color.white, null)
+            canvas?.drawText(text, widthSize.toFloat() / 2, heightSize.toFloat() / 2 + 10f, paint)
             //draw circle
-            val diameter= 20f
+            val diameter = 60f
             val textWidth = paint.measureText(text)
-            canvas?.translate((widthSize+textWidth)/2f+diameter,(heightSize-diameter)/2f)
+            canvas?.translate((widthSize + textWidth) / 2f + diameter, (heightSize - diameter) / 2f)
 
-            paint.color=ResourcesCompat.getColor(resources, R.color.colorAccent, null)
+            paint.color = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
             canvas?.drawArc(0f, 0f, diameter, diameter, 0f, 360 * processValue, true, paint)
-        }else{
-            //draw rectangle
-            canvas?.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
-            canvas?.drawText(text, 0f, 0f, paint)
         }
     }
 
