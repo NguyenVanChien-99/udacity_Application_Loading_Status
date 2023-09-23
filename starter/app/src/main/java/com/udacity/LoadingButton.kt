@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
 class LoadingButton @JvmOverloads constructor(
@@ -20,6 +21,11 @@ class LoadingButton @JvmOverloads constructor(
     private var heightSize = 0
     private var text = ""
     private var processValue = 0f
+
+    private var colorPrimary =0
+    private var colorPrimaryDark =0
+    private var colorAccent =0
+    private var colorWhite =0
 
 
     private val paint = Paint().apply {
@@ -71,6 +77,12 @@ class LoadingButton @JvmOverloads constructor(
 
     init {
         text = resources.getString(R.string.button_name)
+        context.withStyledAttributes(attrs,R.styleable.LoadingButton){
+            colorPrimary= getColor(R.styleable.LoadingButton_colorPrimary,0)
+            colorPrimaryDark= getColor(R.styleable.LoadingButton_colorPrimaryDark,0)
+            colorAccent= getColor(R.styleable.LoadingButton_colorAccent,0)
+            colorWhite= getColor(R.styleable.LoadingButton_colorWhite,0)
+        }
     }
 
 
@@ -81,24 +93,24 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         //draw rectangle
-        paint.color = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
+        paint.color = colorPrimary
         canvas?.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
-        paint.color = ResourcesCompat.getColor(resources, R.color.white, null)
+        paint.color = colorWhite
         canvas?.drawText(text, widthSize.toFloat() / 2, heightSize.toFloat() / 2 + 10f, paint)
 
         //draw the new one
         if (buttonState == ButtonState.Loading) {
             //draw rectangle
-            paint.color = ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, null)
+            paint.color = colorPrimaryDark
             canvas?.drawRect(0f, 0f, widthSize * processValue, heightSize.toFloat(), paint)
-            paint.color = ResourcesCompat.getColor(resources, R.color.white, null)
+            paint.color = colorWhite
             canvas?.drawText(text, widthSize.toFloat() / 2, heightSize.toFloat() / 2 + 10f, paint)
             //draw circle
             val diameter = 60f
             val textWidth = paint.measureText(text)
             canvas?.translate((widthSize + textWidth) / 2f + diameter, (heightSize - diameter) / 2f)
 
-            paint.color = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
+            paint.color = colorAccent
             canvas?.drawArc(0f, 0f, diameter, diameter, 0f, 360 * processValue, true, paint)
         }
     }

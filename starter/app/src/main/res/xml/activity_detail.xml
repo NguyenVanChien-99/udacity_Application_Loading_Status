@@ -4,10 +4,8 @@
     <Transition
         app:constraintSetEnd="@+id/end"
         app:constraintSetStart="@+id/start"
+        app:autoTransition="animateToEnd"
         app:duration="2000">
-        <OnClick
-            app:clickAction="toggle"
-            app:targetId="@+id/textView" />
     </Transition>
     <KeyFrameSet>
         <KeyPosition
