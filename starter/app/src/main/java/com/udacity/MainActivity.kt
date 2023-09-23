@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                 val status = getDownloadStatus()
                 notificationManager.cancelAll()
                 notificationManager.sendNotification(detailTitle, status, applicationContext)
+                binding.contentMain.customButton.setNewState(ButtonState.Completed)
             }
         }
     }

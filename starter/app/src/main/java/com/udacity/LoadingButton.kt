@@ -37,7 +37,9 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private val valueAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-        duration = 2000
+        duration = 1000
+//        repeatMode= ValueAnimator.RESTART
+        repeatCount= ValueAnimator.INFINITE
         addUpdateListener {
             processValue = this.animatedValue as Float
             invalidate()
@@ -51,7 +53,6 @@ class LoadingButton @JvmOverloads constructor(
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationStart(animation)
                 this@LoadingButton.isEnabled = true
-                buttonState = ButtonState.Completed
             }
         })
     }
@@ -68,6 +69,8 @@ class LoadingButton @JvmOverloads constructor(
             }
 
             ButtonState.Completed -> {
+                Log.i("Button state", "COmpleted: ")
+                valueAnimator.end()
                 text = resources.getString(R.string.button_name)
             }
         }
